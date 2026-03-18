@@ -51,6 +51,30 @@ lib_deps =
 | CAN TX | CAN_TXD | 1 |
 | CAN RX | CAN_RXD | 2 |
 
+## Early Boot GPIO Init
+
+The library includes `early_init.c` which runs **before Arduino's `setup()`** using `__attribute__((constructor(101)))`. This directly solves the DO_0 (GPIO 40) ~1s HIGH glitch caused by ESP32-S3 boot strapping.
+
+```
+[ ESP-IDF driver init ]
+        ↓
+[ constructor(101) → early_gpio_init() ]  ← all DOs forced LOW here
+        ↓
+[ Arduino init ]
+        ↓
+[ setup() ]
+```
+
+All 6 digital outputs are configured with `gpio_config_t` and set to `LOW` atomically before any user code runs. You can verify it executed via the shared flag:
+
+```cpp
+void setup() {
+    if (!early_init_ran) {
+        Serial.println("WARNING: early GPIO init did not run!");
+    }
+}
+```
+
 ---
 
 ## API

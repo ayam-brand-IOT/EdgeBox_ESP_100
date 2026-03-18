@@ -4,6 +4,16 @@
 #include "RTClib.h"
 #include <Adafruit_ADS1X15.h>
 
+// early_init.c runs __attribute__((constructor(101))) before Arduino setup().
+// This flag lets you verify at runtime that the early GPIO init executed.
+#ifdef __cplusplus
+extern "C" {
+#endif
+extern volatile bool early_init_ran;
+#ifdef __cplusplus
+}
+#endif
+
 // ###################### Digital OUTPUTS ######################
 // ## NOTES!! ---> DO_GND or DO_24V NOT BOTH AT THE SAME TIME ## (DEPENDS ON DE VERSION)
 
