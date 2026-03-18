@@ -11,7 +11,7 @@
 
 volatile bool early_init_ran = false;  // flag compartido, consultable desde C++
 
-void __attribute__((constructor(101))) early_gpio_init(void) {
+void __attribute__((constructor(101), used)) early_gpio_init(void) {
     gpio_config_t io_conf = {};
     io_conf.intr_type    = GPIO_INTR_DISABLE;
     io_conf.mode         = GPIO_MODE_OUTPUT;
